@@ -1,7 +1,12 @@
 import React from 'react';
+import GameOfLife from './components/gameoflife/GameOfLife';
 
 const App: React.FC = () => {
-  return <div>hello world</div>;
+  return (
+    <>
+      <GameOfLife />
+    </>
+  );
 };
 
 export default App;
