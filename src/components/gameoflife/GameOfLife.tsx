@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import uuid from 'uuid';
 import './index.scss';
 import produce from 'immer';
@@ -66,8 +66,8 @@ const GameOfLife: React.FC = () => {
       });
     });
 
-    setTimeout(simulate, 100);
-  }, []);
+    setTimeout(simulate, 500);
+  }, [operations]);
 
   const run = (): void => {
     setRunning(!running);
