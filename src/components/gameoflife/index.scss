@@ -1,13 +1,29 @@
-.box {
-  border: 1px solid black;
-  width: 20px;
-  height: 20px;
-}
+@import '../../styles/variables.scss';
 
-.dead {
-  background: white;
-}
+.grid {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-.alive {
-  background: pink;
+  .row {
+    display: flex;
+
+    .lifeform {
+      padding: 0.33rem;
+      cursor: pointer;
+    }
+  }
+
+  .game-of-life-button {
+    outline: 0;
+    border: 2px solid black;
+    font-family: 'Red Hat Text';
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray;
+    }
+  }
 }
