@@ -78,24 +78,24 @@ const GameOfLife: React.FC = () => {
   };
 
   return (
-    <>
-      <button onClick={run}>{running ? 'Stop' : 'Start'}</button>
-      <div className='grid'>
-        {grid.map((row, i) => (
-          <div className='row' key={uuid.v4()}>
-            {row.map((lifeform, j) => (
-              <div
-                onClick={(): void => comeAlive(i, j)}
-                className='lifeform'
-                key={uuid.v4()}
-              >
-                {lifeform ? '😃' : '💀'}
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </>
+    <div className='grid'>
+      {grid.map((row, i) => (
+        <div className='row' key={uuid.v4()}>
+          {row.map((lifeform, j) => (
+            <div
+              onClick={(): void => comeAlive(i, j)}
+              className='lifeform'
+              key={uuid.v4()}
+            >
+              {lifeform ? '😃' : '💀'}
+            </div>
+          ))}
+        </div>
+      ))}
+      <button className='game-of-life-button' onClick={run}>
+        {running ? 'Stop' : 'Start'}
+      </button>
+    </div>
   );
 };
 

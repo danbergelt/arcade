@@ -1,0 +1,37 @@
+@import '../../styles/variables.scss';
+
+.instructions {
+  width: 50%;
+  background: $gray;
+  padding: 6rem;
+  border-radius: 8px;
+  margin-right: 2rem;
+
+  .instructions-spacer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .instructions-top {
+      .title {
+        font-weight: bold;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .credit {
+      text-decoration: underline;
+      color: black;
+
+      &:active {
+        color: black;
+      }
+    }
+
+    .credit:visited {
+      color: black;
+    }
+  }
+}

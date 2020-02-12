@@ -1,6 +1,9 @@
+@import '../../styles/variables.scss';
+
 .grid {
-  width: max-content;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .row {
     display: flex;
@@ -8,6 +11,19 @@
     .lifeform {
       padding: 0.33rem;
       cursor: pointer;
+    }
+  }
+
+  .game-of-life-button {
+    outline: 0;
+    border: 2px solid black;
+    font-family: 'Red Hat Text';
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray;
     }
   }
 }
