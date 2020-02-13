@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import uuid from 'uuid';
 import './index.scss';
 import produce from 'immer';
@@ -19,18 +19,25 @@ const NEIGHBORS = [
   [1, 1]
 ];
 
-const GameOfLife: React.FC = () => {
+interface Props {
+  game: boolean;
+  setGame: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
+  // reset game state on render;
+  useEffect(() => {
+    setGame(false);
+  }, []);
+
   // initial graph state
   const [graph, setGraph] = useState<number[][]>(() => {
     return [...Array(NUM_ROWS).fill([...Array(NUM_COLUMNS).fill(0)])];
   });
 
-  // state of automation, either running or not running
-  const [automationState, setAutomationState] = useState<boolean>(false);
-
   // ref to store game state --> line of communication between game loop and game state
-  const gameRef = useRef(automationState);
-  gameRef.current = automationState;
+  const gameRef = useRef(game);
+  gameRef.current = game;
 
   // toggle game state
   const toggle = (i: number, j: number): void => {
@@ -47,7 +54,9 @@ const GameOfLife: React.FC = () => {
       return produce(g, draft => {
         g.forEach((row, i) => {
           row.forEach((_, j) => {
-            draft[i][j] = Math.random() > 0.5 ? 0 : 1;
+            const a = Math.random();
+            const b = Math.random();
+            draft[i][j] = a > b ? 0 : 1;
           });
         });
       });
@@ -98,9 +107,9 @@ const GameOfLife: React.FC = () => {
 
   // game switch
   const toggleGame = (): void => {
-    setAutomationState(!automationState);
+    setGame(!game);
     // state updates are async, so need to run game if state is NOT TRUE
-    if (!automationState) {
+    if (!game) {
       gameRef.current = true;
       run();
     }
@@ -121,12 +130,9 @@ const GameOfLife: React.FC = () => {
           ))}
         </div>
       ))}
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button
-          className={automationState ? 'button' : 'button off'}
-          onClick={toggleGame}
-        >
-          {automationState ? 'stop' : 'start'}
+      <div className='controls'>
+        <button className={game ? 'button' : 'button off'} onClick={toggleGame}>
+          {game ? 'stop' : 'start'}
         </button>
         <button onClick={randomize} className='button'>
           random

@@ -1,32 +1,42 @@
 @import '../../styles/variables.scss';
 
 .grid {
-  width: 100%;
+  width: 55%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   .row {
     display: flex;
+    justify-content: space-between;
 
     .node {
-      padding: 0.33rem;
+      font-size: 1.5rem;
       cursor: pointer;
     }
   }
 
-  .button {
-    border-radius: 8px;
-    outline: 0;
-    border: 2px solid black;
-    font-family: 'Red Hat Text';
-    font-size: 1.3rem;
-    font-weight: bold;
-    cursor: pointer;
-  }
+  .controls {
+    display: flex;
+    justify-content: space-between;
 
-  .off {
-    background: black;
-    color: white;
+    .button {
+      outline: 0;
+      border: 2px solid black;
+      font-family: 'Red Hat Text';
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+
+      .button-content {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .off {
+      background: black;
+      color: white;
+    }
   }
 }
