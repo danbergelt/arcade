@@ -19,6 +19,7 @@
   .controls {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     .button {
       outline: 0;
@@ -40,16 +41,42 @@
       color: white;
     }
 
-    .button-alt {
-      outline: 0;
-      border: 0;
-      padding: 0;
-      font-family: 'Red Hat Text';
-      font-size: 2rem;
-      font-weight: bold;
-      cursor: pointer;
-      border-bottom: 3px solid black;
-      background: 0;
+    .right-side-controls {
+      display: flex;
+      align-items: center;
+
+      .click-or-hover {
+        display: flex;
+        align-items: center;
+
+        .button-reset {
+          background: none;
+          outline: none;
+          border: none;
+          cursor: pointer;
+        }
+
+        .interaction-label {
+          font-family: 'Red Hat Text';
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-right: 0.5rem;
+          margin-left: 0.25rem;
+        }
+      }
+
+      .button-alt {
+        outline: 0;
+        border: 0;
+        padding: 0;
+        font-family: 'Red Hat Text';
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        border-bottom: 3px solid black;
+        background: 0;
+        margin-left: 1.5rem;
+      }
     }
   }
 }

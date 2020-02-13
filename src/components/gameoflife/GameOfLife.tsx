@@ -2,6 +2,8 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import uuid from 'uuid';
 import './index.scss';
 import produce from 'immer';
+import { ReactComponent as On } from '../../assets/on.svg';
+import { ReactComponent as Off } from '../../assets/off.svg';
 
 // rows + column constants for graph
 const NUM_ROWS = 20;
@@ -34,6 +36,9 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
   const [graph, setGraph] = useState<number[][]>(() => {
     return [...Array(NUM_ROWS).fill([...Array(NUM_COLUMNS).fill(0)])];
   });
+
+  // click or hover state
+  const [clickOrHover, setClickOrHover] = useState<string>('click');
 
   // ref to store game state --> line of communication between game loop and game state
   const gameRef = useRef(game);
@@ -137,7 +142,15 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
             <div
               className='node'
               onKeyDown={(e): void => handleKeyDown(i, j, e)}
-              onClick={(): void => handleClick(i, j)}
+              onClick={(): void | false =>
+                clickOrHover === 'click' && handleClick(i, j)
+              }
+              onMouseOver={(): void | false =>
+                clickOrHover === 'hover' && !node && handleClick(i, j)
+              }
+              onFocus={(): void | false =>
+                clickOrHover === 'hover' && !node && handleClick(i, j)
+              }
               key={uuid.v4()}
               role='button'
               tabIndex={0}
@@ -151,9 +164,29 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
         <button className={game ? 'button' : 'button off'} onClick={toggleGame}>
           {game ? 'stop' : 'start'}
         </button>
-        <button onClick={randomize} className='button-alt'>
-          random
-        </button>
+        <div className='right-side-controls'>
+          <div className='click-or-hover'>
+            <button
+              className='button-reset'
+              onClick={(): void => setClickOrHover('click')}
+            >
+              {clickOrHover === 'click' ? <On /> : <Off />}
+            </button>
+            <span className='interaction-label'>click</span>
+          </div>
+          <div className='click-or-hover'>
+            <button
+              className='button-reset'
+              onClick={(): void => setClickOrHover('hover')}
+            >
+              {clickOrHover === 'hover' ? <On /> : <Off />}
+            </button>
+            <div className='interaction-label'>hover</div>
+          </div>
+          <button onClick={randomize} className='button-alt'>
+            random
+          </button>
+        </div>
       </div>
     </div>
   );
