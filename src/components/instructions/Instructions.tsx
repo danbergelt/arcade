@@ -9,19 +9,18 @@ const Instructions: React.FC = () => {
           <h1 className='title'>arcade</h1>
 
           <div className='desc'>
-            currently playing:{' '}
-            <a
-              className='desc'
-              href='https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'
-            >
-              game of life
-            </a>
+            currently playing: <span className='desc'>game of life</span>
           </div>
         </div>
-        <div className='credit'>
-          by:{' '}
+        <div className='credit credit-container'>
           <a className='credit' href='https://danbergelt.com'>
             dan bergelt
+          </a>
+          <a
+            className='credit'
+            href='https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'
+          >
+            learn
           </a>
         </div>
       </div>

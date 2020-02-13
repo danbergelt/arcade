@@ -125,7 +125,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
               onClick={(): void => toggle(i, j)}
               key={uuid.v4()}
             >
-              {!node ? '💀' : '😃'}
+              {!node ? '⚫' : '⚪'}
             </div>
           ))}
         </div>

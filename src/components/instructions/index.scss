@@ -40,6 +40,11 @@
       margin-bottom: 1rem;
     }
 
+    .credit-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
     .credit {
       color: black;
       font-size: 1.5rem;
