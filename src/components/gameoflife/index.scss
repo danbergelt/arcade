@@ -1,29 +1,42 @@
 @import '../../styles/variables.scss';
 
 .grid {
+  width: 55%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   .row {
     display: flex;
+    justify-content: space-between;
 
-    .lifeform {
-      padding: 0.33rem;
+    .node {
+      font-size: 1.5rem;
       cursor: pointer;
     }
   }
 
-  .game-of-life-button {
-    outline: 0;
-    border: 2px solid black;
-    font-family: 'Red Hat Text';
-    font-size: 1.3rem;
-    font-weight: bold;
-    cursor: pointer;
+  .controls {
+    display: flex;
+    justify-content: space-between;
 
-    &:hover {
-      background: $gray;
+    .button {
+      outline: 0;
+      border: 2px solid black;
+      font-family: 'Red Hat Text';
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+
+      .button-content {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .off {
+      background: black;
+      color: white;
     }
   }
 }
