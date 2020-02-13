@@ -45,6 +45,11 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
   // click or hover state
   const [clickOrHover, setClickOrHover] = useState<string>('click');
 
+  // animation speed
+  const [speed, setSpeed] = useState<number>(500);
+  const speedRef = useRef(speed);
+  speedRef.current = speed;
+
   // ref to store game state --> line of communication between game loop and game state
   const gameRef = useRef(game);
   gameRef.current = game;
@@ -112,7 +117,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
       });
     });
     // timing can be adjusted based on preferred speed
-    setTimeout(run, 500);
+    setTimeout(run, speedRef.current);
   }, []);
 
   // game switch
@@ -174,9 +179,32 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
         </div>
       ))}
       <div className='controls'>
-        <button className={game ? 'button' : 'button off'} onClick={toggleGame}>
-          {game ? 'stop' : 'start'}
-        </button>
+        <div className='left-side-controls'>
+          <button
+            className={game ? 'button' : 'button off'}
+            onClick={toggleGame}
+          >
+            {game ? 'stop' : 'start'}
+          </button>
+          <button
+            onClick={(): void => setSpeed(500 * 0.5)}
+            className={speed === 500 * 0.5 ? 'speed active' : 'speed'}
+          >
+            0.5x
+          </button>
+          <button
+            onClick={(): void => setSpeed(500)}
+            className={speed === 500 ? 'speed active' : 'speed'}
+          >
+            1.0x
+          </button>
+          <button
+            onClick={(): void => setSpeed(500 * 1.5)}
+            className={speed === 500 * 1.5 ? 'speed active' : 'speed'}
+          >
+            1.5x
+          </button>
+        </div>
         <div className='right-side-controls'>
           <div className='click-or-hover'>
             <button

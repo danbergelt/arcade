@@ -21,24 +21,48 @@
     justify-content: space-between;
     align-items: center;
 
-    .button {
-      outline: 0;
-      border: 2px solid black;
-      font-family: 'Red Hat Text';
-      font-size: 2rem;
-      font-weight: bold;
-      cursor: pointer;
-      background: 0;
+    .left-side-controls {
+      display: flex;
+      align-items: center;
+      .button {
+        outline: 0;
+        border: 2px solid black;
+        font-family: 'Red Hat Text';
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        background: 0;
 
-      .button-content {
-        display: flex;
-        align-items: center;
+        .button-content {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .off {
+        background: black;
+        color: white;
+      }
+
+      .speed {
+        background: none;
+        padding: 0;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        font-family: 'Red Hat Text';
+        font-weight: bold;
+        font-size: 1.5rem;
+        border-bottom: 3px solid white;
+      }
+
+      .active {
+        border-bottom: 3px solid black;
       }
     }
 
-    .off {
-      background: black;
-      color: white;
+    .left-side-controls > * {
+      margin-right: 1rem;
     }
 
     .right-side-controls {
