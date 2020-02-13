@@ -134,7 +134,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
         <button className={game ? 'button' : 'button off'} onClick={toggleGame}>
           {game ? 'stop' : 'start'}
         </button>
-        <button onClick={randomize} className='button'>
+        <button onClick={randomize} className='button-alt'>
           random
         </button>
       </div>

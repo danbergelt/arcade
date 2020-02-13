@@ -7,18 +7,23 @@ const Instructions: React.FC = () => {
       <div className='instructions-spacer'>
         <div className='instructions-top'>
           <h1 className='title'>arcade</h1>
-          <div>
+
+          <div className='desc'>
+            currently playing:{' '}
             <a
-              href='https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'
               className='desc'
+              href='https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'
             >
-              currently playing: game of life
+              game of life
             </a>
           </div>
         </div>
-        <a href='https://danbergelt.com' className='credit'>
-          by: dan bergelt
-        </a>
+        <div className='credit'>
+          by:{' '}
+          <a className='credit' href='https://danbergelt.com'>
+            dan bergelt
+          </a>
+        </div>
       </div>
     </section>
   );
