@@ -115,6 +115,20 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
     }
   };
 
+  const handleClick = (i: number, j: number): void => {
+    toggle(i, j);
+  };
+
+  const handleKeyDown = (
+    i: number,
+    j: number,
+    e: React.KeyboardEvent<HTMLDivElement>
+  ): void => {
+    if (e.keyCode == 13) {
+      toggle(i, j);
+    }
+  };
+
   return (
     <div className='grid'>
       {graph.map((row, i) => (
@@ -122,10 +136,13 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
           {row.map((node, j) => (
             <div
               className='node'
-              onClick={(): void => toggle(i, j)}
+              onKeyDown={(e): void => handleKeyDown(i, j, e)}
+              onClick={(): void => handleClick(i, j)}
               key={uuid.v4()}
+              role='button'
+              tabIndex={0}
             >
-              {!node ? '💀' : '😃'}
+              {!node ? '⚫' : '⚪'}
             </div>
           ))}
         </div>
@@ -134,7 +151,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
         <button className={game ? 'button' : 'button off'} onClick={toggleGame}>
           {game ? 'stop' : 'start'}
         </button>
-        <button onClick={randomize} className='button'>
+        <button onClick={randomize} className='button-alt'>
           random
         </button>
       </div>

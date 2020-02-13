@@ -1,7 +1,7 @@
 @import '../../styles/variables.scss';
 
 .instructions {
-  width: 45%;
+  width: 50%;
   background: $gray;
   padding: 6rem;
   margin-right: 3rem;
@@ -19,8 +19,8 @@
       }
 
       .desc {
-        text-decoration: underline;
         font-size: 1.5rem;
+        color: black;
 
         &:active {
           color: black;
@@ -40,8 +40,12 @@
       margin-bottom: 1rem;
     }
 
+    .credit-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
     .credit {
-      text-decoration: underline;
       color: black;
       font-size: 1.5rem;
 
