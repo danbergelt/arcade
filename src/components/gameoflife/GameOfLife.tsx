@@ -21,6 +21,11 @@ const NEIGHBORS = [
   [1, 1]
 ];
 
+// generate an empty graph
+const genGraph = (): number[][] => [
+  ...Array(NUM_ROWS).fill([...Array(NUM_COLUMNS).fill(0)])
+];
+
 interface Props {
   game: boolean;
   setGame: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,7 +39,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
 
   // initial graph state
   const [graph, setGraph] = useState<number[][]>(() => {
-    return [...Array(NUM_ROWS).fill([...Array(NUM_COLUMNS).fill(0)])];
+    return genGraph();
   });
 
   // click or hover state
@@ -120,10 +125,12 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
     }
   };
 
+  // click on node
   const handleClick = (i: number, j: number): void => {
     toggle(i, j);
   };
 
+  // click on node via keyboard (accessibility)
   const handleKeyDown = (
     i: number,
     j: number,
@@ -132,6 +139,12 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
     if (e.keyCode == 13) {
       toggle(i, j);
     }
+  };
+
+  // clear graph
+
+  const clear = (): void => {
+    setGraph(genGraph());
   };
 
   return (
@@ -185,6 +198,9 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
           </div>
           <button onClick={randomize} className='button-alt'>
             random
+          </button>
+          <button onClick={clear} className='button-alt'>
+            clear
           </button>
         </div>
       </div>
