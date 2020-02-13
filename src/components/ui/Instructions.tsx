@@ -7,7 +7,9 @@ const Instructions: React.FC = () => {
       <div className='instructions-spacer'>
         <div className='instructions-top'>
           <h1 className='title'>arcade</h1>
-          <h2 className='desc'>games to waste your time</h2>
+          <h2 className='desc'>
+            <span id='playing'>playing:</span> game of life
+          </h2>
         </div>
         <a href='https://danbergelt.com' className='credit'>
           by: dan bergelt

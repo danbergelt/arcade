@@ -3,98 +3,135 @@ import uuid from 'uuid';
 import './index.scss';
 import produce from 'immer';
 
+// rows + column constants for graph
 const NUM_ROWS = 20;
 const NUM_COLUMNS = 20;
 
+// math shortcuts to get neighbors
+const NEIGHBORS = [
+  [-1, -1],
+  [-1, 0],
+  [-1, 1],
+  [0, -1],
+  [0, 1],
+  [1, -1],
+  [1, 0],
+  [1, 1]
+];
+
 const GameOfLife: React.FC = () => {
-  const [grid, setGrid] = useState<number[][]>(() => {
+  // initial graph state
+  const [graph, setGraph] = useState<number[][]>(() => {
     return [...Array(NUM_ROWS).fill([...Array(NUM_COLUMNS).fill(0)])];
   });
 
-  const comeAlive = (i: number, j: number): void => {
-    const nextGrid = produce(grid, newGrid => {
-      newGrid[i][j] = newGrid[i][j] ? 0 : 1;
+  // state of automation, either running or not running
+  const [automationState, setAutomationState] = useState<boolean>(false);
+
+  // ref to store game state --> line of communication between game loop and game state
+  const gameRef = useRef(automationState);
+  gameRef.current = automationState;
+
+  // toggle game state
+  const toggle = (i: number, j: number): void => {
+    setGraph(g => {
+      return produce(g, draft => {
+        draft[i][j] = g[i][j] ? 0 : 1;
+      });
     });
-    setGrid(nextGrid);
   };
 
-  const [running, setRunning] = useState(false);
-  const runningRef = useRef(running);
-  runningRef.current = running;
+  // randomize graph state
+  const randomize = (): void => {
+    setGraph(g => {
+      return produce(g, draft => {
+        g.forEach((row, i) => {
+          row.forEach((_, j) => {
+            draft[i][j] = Math.random() > 0.5 ? 0 : 1;
+          });
+        });
+      });
+    });
+  };
 
-  const operations = [
-    [0, 1],
-    [0, -1],
-    [1, -1],
-    [-1, 1],
-    [1, 1],
-    [-1, -1],
-    [1, 0],
-    [-1, 0]
-  ];
-
-  const simulate = useCallback(() => {
-    if (!runningRef.current) {
+  // run the automation, update graph based on Game of Life rules
+  const run = useCallback((): void => {
+    if (!gameRef.current) {
       return;
     }
 
-    setGrid(g => {
-      return produce(g, gridCopy => {
-        for (let i = 0; i < NUM_ROWS; i++) {
-          for (let k = 0; k < NUM_COLUMNS; k++) {
-            let neighbors = 0;
-            operations.forEach(([x, y]) => {
-              const newI = i + x;
-              const newK = k + y;
+    setGraph(g => {
+      return produce(g, draft => {
+        g.forEach((row, i) => {
+          row.forEach((node, j) => {
+            let count = 0;
+            NEIGHBORS.forEach(([x, y]) => {
+              const nX = i + x;
+              const nY = j + y;
               if (
-                newI >= 0 &&
-                newI < NUM_ROWS &&
-                newK >= 0 &&
-                newK < NUM_COLUMNS
-              ) {
-                neighbors += g[newI][newK];
-              }
+                nX > 0 &&
+                nX < NUM_ROWS &&
+                nY > 0 &&
+                nY < NUM_COLUMNS &&
+                g[nX][nY]
+              )
+                count++;
             });
 
-            if (neighbors < 2 || neighbors > 3) {
-              gridCopy[i][k] = 0;
-            } else if (g[i][k] === 0 && neighbors === 3) {
-              gridCopy[i][k] = 1;
+            if ((node && count < 2) || (node && count > 3)) {
+              draft[i][j] = 0;
             }
-          }
-        }
+
+            if (
+              (node && (count === 2 || count === 3)) ||
+              (!node && count === 3)
+            ) {
+              draft[i][j] = 1;
+            }
+          });
+        });
       });
     });
+    // timing can be adjusted based on preferred speed
+    setTimeout(run, 500);
+  }, []);
 
-    setTimeout(simulate, 500);
-  }, [operations]);
-
-  const run = (): void => {
-    setRunning(!running);
-    if (!running) {
-      runningRef.current = true;
-      simulate();
+  // game switch
+  const toggleGame = (): void => {
+    setAutomationState(!automationState);
+    // state updates are async, so need to run game if state is NOT TRUE
+    if (!automationState) {
+      gameRef.current = true;
+      run();
     }
   };
 
   return (
     <div className='grid'>
-      {grid.map((row, i) => (
+      {graph.map((row, i) => (
         <div className='row' key={uuid.v4()}>
-          {row.map((lifeform, j) => (
+          {row.map((node, j) => (
             <div
-              onClick={(): void => comeAlive(i, j)}
-              className='lifeform'
+              className='node'
+              onClick={(): void => toggle(i, j)}
               key={uuid.v4()}
             >
-              {lifeform ? '😃' : '💀'}
+              {!node ? '💀' : '😃'}
             </div>
           ))}
         </div>
       ))}
-      <button className='game-of-life-button' onClick={run}>
-        {running ? 'Stop' : 'Start'}
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button
+          className={automationState ? 'button' : 'button off'}
+          onClick={toggleGame}
+        >
+          {automationState ? 'stop' : 'start'}
+        </button>
+        <button onClick={randomize} className='button'>
+          random
+        </button>
+      </div>
     </div>
   );
 };
