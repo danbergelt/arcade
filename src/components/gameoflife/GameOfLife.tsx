@@ -1,132 +1,239 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import uuid from 'uuid';
+import './index.scss';
 import produce from 'immer';
+import { ReactComponent as On } from '../../assets/on.svg';
+import { ReactComponent as Off } from '../../assets/off.svg';
 
-const numRows = 50;
-const numCols = 50;
+// rows + column constants for graph
+const NUM_ROWS = 20;
+const NUM_COLUMNS = 20;
 
-const operations = [
-  [0, 1],
-  [0, -1],
-  [1, -1],
-  [-1, 1],
-  [1, 1],
+// math shortcuts to get neighbors
+const NEIGHBORS = [
   [-1, -1],
+  [-1, 0],
+  [-1, 1],
+  [0, -1],
+  [0, 1],
+  [1, -1],
   [1, 0],
-  [-1, 0]
+  [1, 1]
 ];
 
-const generateEmptyGrid = () => {
-  const rows = [];
-  for (let i = 0; i < numRows; i++) {
-    rows.push(Array.from(Array(numCols), () => 0));
-  }
+// generate an empty graph
+const genGraph = (): number[][] => [
+  ...Array(NUM_ROWS).fill([...Array(NUM_COLUMNS).fill(0)])
+];
 
-  return rows;
-};
+interface Props {
+  game: boolean;
+  setGame: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const App: React.FC = () => {
-  const [grid, setGrid] = useState(() => {
-    return generateEmptyGrid();
+const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
+  // reset game state on render;
+  useEffect(() => {
+    setGame(false);
+  }, []);
+
+  // initial graph state
+  const [graph, setGraph] = useState<number[][]>(() => {
+    return genGraph();
   });
 
-  const [running, setRunning] = useState(false);
+  // click or hover state
+  const [clickOrHover, setClickOrHover] = useState<string>('click');
 
-  const runningRef = useRef(running);
-  runningRef.current = running;
+  // animation speed
+  const [speed, setSpeed] = useState<number>(500);
+  const speedRef = useRef(speed);
+  speedRef.current = speed;
 
-  const runSimulation = useCallback(() => {
-    if (!runningRef.current) {
+  // ref to store game state --> line of communication between game loop and game state
+  const gameRef = useRef(game);
+  gameRef.current = game;
+
+  // toggle game state
+  const toggle = (i: number, j: number): void => {
+    setGraph(g => {
+      return produce(g, draft => {
+        draft[i][j] = g[i][j] ? 0 : 1;
+      });
+    });
+  };
+
+  // randomize graph state
+  const randomize = (): void => {
+    setGraph(g => {
+      return produce(g, draft => {
+        g.forEach((row, i) => {
+          row.forEach((_, j) => {
+            const a = Math.random();
+            const b = Math.random();
+            draft[i][j] = a > b ? 0 : 1;
+          });
+        });
+      });
+    });
+  };
+
+  // run the automation, update graph based on Game of Life rules
+  const run = useCallback((): void => {
+    if (!gameRef.current) {
       return;
     }
 
-    setGrid(g => {
-      return produce(g, gridCopy => {
-        for (let i = 0; i < numRows; i++) {
-          for (let k = 0; k < numCols; k++) {
-            let neighbors = 0;
-            operations.forEach(([x, y]) => {
-              const newI = i + x;
-              const newK = k + y;
-              if (newI >= 0 && newI < numRows && newK >= 0 && newK < numCols) {
-                neighbors += g[newI][newK];
-              }
+    setGraph(g => {
+      return produce(g, draft => {
+        g.forEach((row, i) => {
+          row.forEach((node, j) => {
+            let count = 0;
+            NEIGHBORS.forEach(([x, y]) => {
+              const nX = i + x;
+              const nY = j + y;
+              if (
+                nX > 0 &&
+                nX < NUM_ROWS &&
+                nY > 0 &&
+                nY < NUM_COLUMNS &&
+                g[nX][nY]
+              )
+                count++;
             });
 
-            if (neighbors < 2 || neighbors > 3) {
-              gridCopy[i][k] = 0;
-            } else if (g[i][k] === 0 && neighbors === 3) {
-              gridCopy[i][k] = 1;
+            if ((node && count < 2) || (node && count > 3)) {
+              draft[i][j] = 0;
             }
-          }
-        }
+
+            if (
+              (node && (count === 2 || count === 3)) ||
+              (!node && count === 3)
+            ) {
+              draft[i][j] = 1;
+            }
+          });
+        });
       });
     });
-
-    setTimeout(runSimulation, 100);
+    // timing can be adjusted based on preferred speed
+    setTimeout(run, speedRef.current);
   }, []);
 
-  return (
-    <>
-      <button
-        onClick={() => {
-          setRunning(!running);
-          if (!running) {
-            runningRef.current = true;
-            runSimulation();
-          }
-        }}
-      >
-        {running ? 'stop' : 'start'}
-      </button>
-      <button
-        onClick={() => {
-          const rows = [];
-          for (let i = 0; i < numRows; i++) {
-            rows.push(
-              Array.from(Array(numCols), () => (Math.random() > 0.7 ? 1 : 0))
-            );
-          }
+  // game switch
+  const toggleGame = (): void => {
+    setGame(!game);
+    // state updates are async, so need to run game if state is NOT TRUE
+    if (!game) {
+      gameRef.current = true;
+      run();
+    }
+  };
 
-          setGrid(rows);
-        }}
-      >
-        random
-      </button>
-      <button
-        onClick={() => {
-          setGrid(generateEmptyGrid());
-        }}
-      >
-        clear
-      </button>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${numCols}, 20px)`
-        }}
-      >
-        {grid.map((rows, i) =>
-          rows.map((col, k) => (
+  // click on node
+  const handleClick = (i: number, j: number): void => {
+    toggle(i, j);
+  };
+
+  // click on node via keyboard (accessibility)
+  const handleKeyDown = (
+    i: number,
+    j: number,
+    e: React.KeyboardEvent<HTMLDivElement>
+  ): void => {
+    if (e.keyCode == 13) {
+      toggle(i, j);
+    }
+  };
+
+  // clear graph
+
+  const clear = (): void => {
+    setGraph(genGraph());
+  };
+
+  return (
+    <div className='grid'>
+      {graph.map((row, i) => (
+        <div className='row' key={uuid.v4()}>
+          {row.map((node, j) => (
             <div
-              key={`${i}-${k}`}
-              onClick={() => {
-                const newGrid = produce(grid, gridCopy => {
-                  gridCopy[i][k] = grid[i][k] ? 0 : 1;
-                });
-                setGrid(newGrid);
-              }}
-              style={{
-                width: 20,
-                height: 20,
-                backgroundColor: grid[i][k] ? 'pink' : undefined,
-                border: 'solid 1px black'
-              }}
-            />
-          ))
-        )}
+              className='node'
+              onKeyDown={(e): void => handleKeyDown(i, j, e)}
+              onClick={(): void | false =>
+                clickOrHover === 'click' && handleClick(i, j)
+              }
+              onMouseOver={(): void | false =>
+                clickOrHover === 'hover' && !node && handleClick(i, j)
+              }
+              onFocus={(): void | false =>
+                clickOrHover === 'hover' && !node && handleClick(i, j)
+              }
+              key={uuid.v4()}
+              role='button'
+              tabIndex={0}
+            >
+              {!node ? '⚫' : '⚪'}
+            </div>
+          ))}
+        </div>
+      ))}
+      <div className='controls'>
+        <div className='left-side-controls'>
+          <button
+            className={game ? 'button' : 'button off'}
+            onClick={toggleGame}
+          >
+            {game ? 'stop' : 'start'}
+          </button>
+          <button
+            onClick={(): void => setSpeed(500 * 0.5)}
+            className={speed === 500 * 0.5 ? 'speed active' : 'speed'}
+          >
+            0.5x
+          </button>
+          <button
+            onClick={(): void => setSpeed(500)}
+            className={speed === 500 ? 'speed active' : 'speed'}
+          >
+            1.0x
+          </button>
+          <button
+            onClick={(): void => setSpeed(500 * 1.5)}
+            className={speed === 500 * 1.5 ? 'speed active' : 'speed'}
+          >
+            1.5x
+          </button>
+        </div>
+        <div className='right-side-controls'>
+          <div className='click-or-hover'>
+            <button
+              className='button-reset'
+              onClick={(): void => setClickOrHover('click')}
+            >
+              {clickOrHover === 'click' ? <On /> : <Off />}
+            </button>
+            <span className='interaction-label'>click</span>
+          </div>
+          <div className='click-or-hover'>
+            <button
+              className='button-reset'
+              onClick={(): void => setClickOrHover('hover')}
+            >
+              {clickOrHover === 'hover' ? <On /> : <Off />}
+            </button>
+            <div className='interaction-label'>hover</div>
+          </div>
+          <button onClick={randomize} className='button-alt'>
+            random
+          </button>
+          <button onClick={clear} className='button-alt'>
+            clear
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default App;
+export default GameOfLife;
