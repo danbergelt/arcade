@@ -1,8 +1,18 @@
+@import '../../styles/mixins.scss';
+
 .nav {
   padding: 3rem 9rem;
   display: flex;
   text-align: center;
   justify-content: flex-end;
+
+  @include large {
+    padding: 3rem 6rem;
+  }
+
+  @include small {
+    padding: 2rem 3rem;
+  }
 
   .spinner {
     animation: rotation 1s infinite linear;

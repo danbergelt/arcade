@@ -1,8 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Red+Hat+Text:400,500&display=swap');
+@import './styles/mixins.scss';
 
 .app {
   display: flex;
   padding: 0rem 9rem 3rem 9rem;
   height: 85vh;
   font-family: 'Red Hat Text';
+
+  @include large {
+    padding: 0rem 6rem 3rem 6rem;
+  }
+
+  @include medium {
+    flex-direction: column;
+  }
+
+  @include small {
+    padding: 0rem 3rem 3rem 3rem;
+  }
 }
