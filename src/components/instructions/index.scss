@@ -1,10 +1,21 @@
 @import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
 
 .instructions {
-  width: 50%;
+  width: 100%;
   background: $gray;
   padding: 6rem;
   margin-right: 3rem;
+
+  @include large {
+    width: 33%;
+  }
+
+  @include medium {
+    width: 100%;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
 
   .instructions-spacer {
     height: 100%;
@@ -16,6 +27,10 @@
       .title {
         font-weight: bold;
         font-size: 3rem;
+
+        @include small {
+          font-size: 2.5rem;
+        }
       }
 
       .desc {
@@ -24,6 +39,10 @@
 
         &:active {
           color: black;
+        }
+
+        @include small {
+          font-size: 1.3rem;
         }
       }
 
@@ -51,6 +70,10 @@
 
       &:active {
         color: black;
+      }
+
+      @include small {
+        font-size: 1.3rem;
       }
     }
 
