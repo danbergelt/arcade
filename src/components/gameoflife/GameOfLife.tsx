@@ -188,7 +188,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
           </button>
           <button
             onClick={(): void => setSpeed(500 * 0.5)}
-            className={speed === 500 * 0.5 ? 'speed active' : 'speed'}
+            className={speed === 500 / 0.5 ? 'speed active' : 'speed'}
           >
             0.5x
           </button>
@@ -200,7 +200,7 @@ const GameOfLife: React.FC<Props> = ({ game, setGame }) => {
           </button>
           <button
             onClick={(): void => setSpeed(500 * 1.5)}
-            className={speed === 500 * 1.5 ? 'speed active' : 'speed'}
+            className={speed === 500 / 1.5 ? 'speed active' : 'speed'}
           >
             1.5x
           </button>
